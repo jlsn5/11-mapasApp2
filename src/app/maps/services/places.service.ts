@@ -1,45 +1,83 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { PlacesResponse, Feature } from '../interfaces/places';
+import { PlacesApiClient } from '../api';
+import { MapService } from '.';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
 
+
   public useLocation?: [number, number];
 
-  get isUserLocationReady(): boolean{
+  public isLoadingPlaces: boolean = false;
+  public places: Feature[] = [];
+
+  get isUserLocationReady(): boolean {
     return !!this.useLocation;
   }
 
-  constructor( private http: HttpClient ) {
+  constructor(
+    private placesApi: PlacesApiClient,
+    private mapService: MapService
+  ) {
     this.getUserLocation();
-   }
+  }
 
-  getUserLocation(): Promise<[number, number]> {
 
-    return new Promise( (resolve, reject) => {
+  public async getUserLocation(): Promise<[number, number]> {
+
+    return new Promise( (resolve, reject ) => {
 
       navigator.geolocation.getCurrentPosition(
-        ({coords}) => {
+        ({ coords }) => {
           this.useLocation = [ coords.longitude, coords.latitude ];
-          resolve( this.useLocation )
+          resolve( this.useLocation );
         },
-        (err) => {
-          alert('No geolocation');
+        ( err ) => {
+          alert('No se pudo obtener la geolocalización')
+          console.log(err);
           reject();
         }
       );
 
+
+    });
+
+  }
+
+
+  getPlacesByQuery( query: string = '' ) {
+
+    if ( query.length === 0 ) {
+      this.isLoadingPlaces = false;
+      this.places = [];
+      return;
+    }
+
+    if ( !this.useLocation ) throw Error('No hay userLocation');
+
+    this.isLoadingPlaces = true;
+
+    this.placesApi.get<PlacesResponse>(`/${ query }.json`, {
+      params: {
+        proximity: this.useLocation.join(',')
+      }
     })
+      .subscribe( resp => {
+        this.isLoadingPlaces = false;
+        this.places = resp.features;
+
+        // this.mapService.createMarkersFromPlaces( this.places, this.useLocation! );
+      });
 
   }
 
-  getPlacesByQuery( query: String = '' ){
 
-    this.http.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?country=es&proximity=ip&types=place,postcode,address&language=es&access_token=pk.eyJ1IjoiaW1hZ2l2ZTk5IiwiYSI6ImNsMWpnNWZ6cTEzYmgzbHF1cWNkcjM4M2gifQ.cbSRQMVFY1h3BOmyKWoB3A`)
-      .subscribe (console.log)
-
+  deletePlaces() {
+    this.places = [];
   }
+
 
 }
