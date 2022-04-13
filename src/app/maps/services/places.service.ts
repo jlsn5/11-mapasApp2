@@ -18,7 +18,7 @@ export class PlacesService {
     return !!this.useLocation;
   }
 
-  constructor(
+  constructor( 
     private placesApi: PlacesApiClient,
     private mapService: MapService
   ) {
@@ -69,7 +69,7 @@ export class PlacesService {
         this.isLoadingPlaces = false;
         this.places = resp.features;
 
-        // this.mapService.createMarkersFromPlaces( this.places, this.useLocation! );
+        this.mapService.createMarkersFromPlaces( this.places, this.useLocation! );
       });
 
   }

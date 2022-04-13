@@ -25,7 +25,7 @@ export class PlacesApiClient extends HttpClient {
 
         return super.get<T>( url, {
             params: {
-                // limit: 5,
+                limit: 5,
                 language: 'es',
                 access_token: environment.apiKey,
                 ...options.params
@@ -36,4 +36,5 @@ export class PlacesApiClient extends HttpClient {
     }
 
 }
+
 

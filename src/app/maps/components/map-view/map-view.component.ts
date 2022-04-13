@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Map, Marker, Popup } from 'mapbox-gl';
-import { PlacesService, MapService } from '../../services';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Map, Popup, Marker } from 'mapbox-gl';
+import { MapService, PlacesService } from '../../services';
 
 @Component({
   selector: 'app-map-view',
@@ -9,16 +9,17 @@ import { PlacesService, MapService } from '../../services';
 })
 export class MapViewComponent implements AfterViewInit {
 
-  @ViewChild('mapDiv')
+  @ViewChild('mapDiv') 
   mapDivElement!: ElementRef
 
-  constructor( private placesService: PlacesService,
-                private mapService: MapService ) { }
+  constructor( 
+    private placesService: PlacesService,
+    private mapService: MapService
+  ) { }
 
   ngAfterViewInit(): void {
-
     if ( !this.placesService.useLocation ) throw Error('No hay placesService.userLocation');
-
+      
     const map = new Map({
       container: this.mapDivElement.nativeElement,
       style: 'mapbox://styles/mapbox/light-v10', // style URL
@@ -32,15 +33,13 @@ export class MapViewComponent implements AfterViewInit {
         <span>Estoy en este lugar del mundo</span>
       `);
 
-      new Marker({ color: 'red' })
+    new Marker({ color: 'red' })
       .setLngLat( this.placesService.useLocation )
       .setPopup( popup )
       .addTo( map )
 
     this.mapService.setMap( map );
 
-
   }
-
 
 }

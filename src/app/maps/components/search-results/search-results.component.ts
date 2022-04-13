@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MapService, PlacesService } from '../../services';
-// import { Feature } from '../../interfaces/places';
+import { Feature } from '../../interfaces/places';
 
 @Component({
   selector: 'app-search-results',
@@ -11,38 +11,38 @@ export class SearchResultsComponent  {
 
   public selectedId: string = '';
 
-  constructor(
+  constructor( 
     private placesService: PlacesService,
     private mapService: MapService,
   ) { }
 
 
-  // get isLoadingPlaces(): boolean {
-  //   return this.placesService.isLoadingPlaces;
-  // }
+  get isLoadingPlaces(): boolean {
+    return this.placesService.isLoadingPlaces;
+  }
 
-  // get places(): Feature[] {
-  //   return this.placesService.places;
-  // }
+  get places(): Feature[] {
+    return this.placesService.places;
+  }
 
-  // flyTo( place: Feature ) {
-  //   this.selectedId = place.id;
+  flyTo( place: Feature ) {
+    this.selectedId = place.id;
 
-  //   const [ lng, lat ] = place.center;
-  //   this.mapService.flyTo([ lng, lat ]);
-  // }
+    const [ lng, lat ] = place.center;
+    this.mapService.flyTo([ lng, lat ]);
+  }
 
-  // getDirections( place: Feature ) {
-  //   if ( !this.placesService.useLocation ) throw Error('No hay userLocation');
+  getDirections( place: Feature ) {
+    if ( !this.placesService.useLocation ) throw Error('No hay userLocation');
 
-  //   this.placesService.deletePlaces();
+    this.placesService.deletePlaces();
 
-  //   const start = this.placesService.useLocation;
-  //   const end = place.center as [number, number];
+    const start = this.placesService.useLocation;
+    const end = place.center as [number, number];
 
+    
 
-
-  //   this.mapService.getRouteBetweenPoints(start, end);
-  // }
+    this.mapService.getRouteBetweenPoints(start, end);
+  }
 
 }
